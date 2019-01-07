@@ -1,18 +1,38 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import controller.ViewManager;
+import data.Database;
+import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class HomeView extends JPanel implements ActionListener {
 	
 	private ViewManager manager;		// manages interactions between the views, model, and database
+	private JButton powerButton;
+	private JButton logoutButton;
+	private JButton depositButton;
+	private JButton withdrawButton;
+	private JButton transferButton;
+	private JLabel welcomeLabel;
+	
+	public static final String NL = System.getProperty("line.separator");  
+	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
 	
 	/**
 	 * Constructs an instance (or objects) of the HomeView class.
@@ -24,6 +44,7 @@ public class HomeView extends JPanel implements ActionListener {
 		super();
 		
 		this.manager = manager;
+		this.welcomeLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
 	}
 	
@@ -33,22 +54,61 @@ public class HomeView extends JPanel implements ActionListener {
 	 * Initializes the HomeView components.
 	 */
 	
+	
 	private void initialize() {
-		
-		// TODO
-		//
-		// this is a placeholder for this view and should be removed once you start
-		// building the HomeView.
+		this.setLayout(null);
 		
 		this.add(new javax.swing.JLabel("HomeView", javax.swing.SwingConstants.CENTER));
 		
-		// TODO
-		//
-		// this is where you should build the HomeView (i.e., all the components that
-		// allow the user to interact with the ATM - deposit, withdraw, transfer, etc.).
-		//
-		// feel free to use my layout in LoginView as an example for laying out and
-		// positioning your components.
+		initPowerButton();
+		initWelcomeLabel();
+		initLogoutButton();
+		initDepositButton();
+		initWithdrawButton();
+		initTransferButton();
+	}
+	public void initWelcomeLabel() {
+		welcomeLabel.setBounds(0, 240, 500, 35);
+		welcomeLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		//welcomeLabel.setText(manager.welcome());
+		
+		
+		this.add(welcomeLabel);
+	}
+	
+	private void initPowerButton() {
+		powerButton = new JButton();
+		powerButton.setBounds(5, 5, 50, 50);
+		powerButton.addActionListener(this);
+		
+		try {
+			Image image = ImageIO.read(new File("images/power-off.png"));
+			powerButton.setIcon(new ImageIcon(image));
+		} catch (Exception e) {
+			powerButton.setText("OFF");
+		}
+		
+		this.add(powerButton);
+	}
+	
+	private void initLogoutButton() {
+		logoutButton = new JButton("Log Out");
+		logoutButton.setBounds(100, 300, 300, 20);
+		logoutButton.addActionListener(this);
+		
+		this.add(logoutButton);
+	}
+	
+	private void initDepositButton() {
+		
+	}
+	
+	private void initWithdrawButton() {
+		
+	}
+	
+	private void initTransferButton() {
+		
 	}
 	
 	/*
@@ -72,13 +132,18 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-				
-		// TODO
-		//
-		// this is where you'll setup your action listener, which is responsible for
-		// responding to actions the user might take in this view (an action can be a
-		// user clicking a button, typing in a textfield, etc.).
-		//
-		// feel free to use my action listener in LoginView.java as an example.
+		Object source = e.getSource();
+		if (source.equals(logoutButton)) {
+			manager.switchTo(ATM.LOGIN_VIEW);
+		}
+		else if (source.equals(depositButton)) {
+			manager.switchTo(ATM.DEPOSIT_VIEW);
+		}
+		else if (source.equals(powerButton)) {
+			manager.shutdown();
+		}
+		else {
+			System.err.println("ERROR: Action command not found (" + e.getActionCommand() + ")");
+		}
 	}
 }
