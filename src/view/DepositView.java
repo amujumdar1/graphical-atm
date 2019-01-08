@@ -67,12 +67,12 @@ public class DepositView extends JPanel implements ActionListener {
 	
 	private void initDepositField() {
 		JLabel label = new JLabel("Amount to Deposit");
-		label.setBounds(50, 70, 100, 35);
+		label.setBounds(50, 70, 200, 35);
 		label.setLabelFor(depositField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		depositField = new JTextField(20);
-		depositField.setBounds(160, 70, 240, 35);
+		depositField.setBounds(260, 70, 150, 40);
 		
 		this.add(label);
 		this.add(depositField);
@@ -95,7 +95,7 @@ public class DepositView extends JPanel implements ActionListener {
 	
 	private void initBackButton() {
 		backButton = new JButton("Back");
-		backButton.setBounds(100, 300, 300, 20);
+		backButton.setBounds(150, 280, 200, 40);
 		backButton.addActionListener(this);
 		
 		this.add(backButton);

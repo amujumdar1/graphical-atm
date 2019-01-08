@@ -30,6 +30,8 @@ public class HomeView extends JPanel implements ActionListener {
 	private JButton withdrawButton;
 	private JButton transferButton;
 	private JLabel welcomeLabel;
+	private JLabel accountNumberLabel;
+	private JLabel balanceLabel;
 	
 	public static final String NL = System.getProperty("line.separator");  
 	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
@@ -45,6 +47,8 @@ public class HomeView extends JPanel implements ActionListener {
 		
 		this.manager = manager;
 		this.welcomeLabel = new JLabel("", SwingConstants.CENTER);
+		this.accountNumberLabel = new JLabel("", SwingConstants.CENTER);
+		this.balanceLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
 	}
 	
@@ -66,14 +70,34 @@ public class HomeView extends JPanel implements ActionListener {
 		initDepositButton();
 		initWithdrawButton();
 		initTransferButton();
+		initAccountNumberLabel();
+		initBalanceLabel();
 	}
 	public void initWelcomeLabel() {
-		welcomeLabel.setBounds(0, 240, 500, 35);
+		welcomeLabel.setBounds(150, 5, 200, 35);
 		welcomeLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
 		welcomeLabel.setText(manager.welcome());
 		
 		
 		this.add(welcomeLabel);
+	}
+	
+	public void initAccountNumberLabel() {
+		accountNumberLabel.setBounds(150, 20, 200, 35);
+		accountNumberLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		accountNumberLabel.setText(manager.showAccountNumber());
+		
+		
+		this.add(accountNumberLabel);
+	}
+	
+	public void initBalanceLabel() {
+		balanceLabel.setBounds(150, 35, 200, 35);
+		balanceLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		balanceLabel.setText(manager.showBalance());
+		
+		
+		this.add(balanceLabel);
 	}
 	
 	private void initPowerButton() {
@@ -93,7 +117,7 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initLogoutButton() {
 		logoutButton = new JButton("Log Out");
-		logoutButton.setBounds(100, 300, 300, 20);
+		logoutButton.setBounds(150, 280, 200, 40);
 		logoutButton.addActionListener(this);
 		
 		this.add(logoutButton);
@@ -101,16 +125,22 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initDepositButton() {
 		depositButton = new JButton("Deposit");
+		depositButton.setBounds(150, 70, 200, 40);
+		depositButton.addActionListener(this);
 		this.add(depositButton);
 	}
 	
 	private void initWithdrawButton() {
 		withdrawButton = new JButton("Withdraw");
+		withdrawButton.setBounds(150, 140, 200, 40);
+		withdrawButton.addActionListener(this);
 		this.add(withdrawButton);
 	}
 	
 	private void initTransferButton() {
 		transferButton = new JButton("Transfer");
+		transferButton.setBounds(150, 210, 200, 40);
+		transferButton.addActionListener(this);
 		this.add(transferButton);
 	}
 	
@@ -144,6 +174,9 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		else if (source.equals(withdrawButton)) {
 			manager.switchTo(ATM.WITHDRAW_VIEW);
+		}
+		else if (source.equals(transferButton)) {
+			manager.switchTo(ATM.TRANSFER_VIEW);
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

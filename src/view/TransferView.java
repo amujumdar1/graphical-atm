@@ -30,6 +30,7 @@ public class TransferView extends JPanel implements ActionListener {
 	private JButton transferButton;
 	
 	private JTextField transferField;
+	private JTextField recepientField;
 	
 	public static final String NL = System.getProperty("line.separator");  
 	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
@@ -63,20 +64,33 @@ public class TransferView extends JPanel implements ActionListener {
 		initBackButton();
 		initTransferButton();
 		initTransferField();
+		initRecepientField();
 	}
 	
 	private void initTransferField() {
 		JLabel label = new JLabel("Amount to Transfer");
-		label.setBounds(50, 70, 100, 35);
+		label.setBounds(50, 70, 200, 35);
 		label.setLabelFor(transferField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		transferField = new JTextField(20);
-		transferField.setBounds(160, 70, 240, 35);
+		transferField.setBounds(260, 70, 150, 40);
 		
 		this.add(label);
 		this.add(transferField);
 		
+	}
+	private void initRecepientField() {
+		JLabel label = new JLabel("Account Number of Recepient");
+		label.setBounds(30, 140, 220, 35);
+		label.setLabelFor(recepientField);
+		label.setFont(new Font("DialogInput", Font.BOLD, 14));
+		
+		recepientField = new JTextField(20);
+		recepientField.setBounds(260, 140, 150, 40);
+		
+		this.add(label);
+		this.add(recepientField);
 	}
 	
 	private void initPowerButton() {
@@ -96,7 +110,7 @@ public class TransferView extends JPanel implements ActionListener {
 	
 	private void initBackButton() {
 		backButton = new JButton("Back");
-		backButton.setBounds(100, 300, 300, 20);
+		backButton.setBounds(150, 280, 200, 40);
 		backButton.addActionListener(this);
 		
 		this.add(backButton);

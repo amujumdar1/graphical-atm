@@ -58,6 +58,8 @@ public class ViewManager {
 			} else {
 				switchTo(ATM.HOME_VIEW);
 				hv.initWelcomeLabel();
+				hv.initAccountNumberLabel();
+				hv.initBalanceLabel();
 			}
 		} catch (NumberFormatException e) {
 			lv.updateErrorMessage("Account numbers and PINs don't have letters.");
@@ -125,18 +127,36 @@ public class ViewManager {
 		try {
 			String firstName = account.getUser().getFirstName();
 			String lastName = account.getUser().getLastName();
+			String welcome =  "Welcome, " + firstName + " " + lastName + "!";
 			
-			String welcome =  "Welcome, " + firstName + " " + lastName  + 
-					"\n" + "Account Number: " + account.getAccountNumber() +
-					"\n" + "Balance: " + NumberFormat.getCurrencyInstance(Locale.US).format(account.getBalance());
-					// currency format cited from https://stackoverflow.com/questions/2379221/java-currency-number-format
-			System.out.println(welcome);
 			return welcome;
 		}
 		catch (NullPointerException e) {
-			return "Null Pointer";
+			return "Null Name";
 		}
 	}
+	
+	public String showAccountNumber() {
+		try {
+			return "Account Number: " + account.getAccountNumber();
+		}
+		catch (NullPointerException e) {
+			return "Null Account Number";
+		}
+		
+	}
+	
+	public String showBalance() {
+		try {
+			return "Balance: " + NumberFormat.getCurrencyInstance(Locale.US).format(account.getBalance());
+			// currency format cited from https://stackoverflow.com/questions/2379221/java-currency-number-format
+		}
+		catch (NullPointerException e) {
+			return "Invalid Balance";
+		}
+			}
+	
+	
 	public BankAccount getAccount() {
 		return account;
 	}
