@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
@@ -21,15 +22,14 @@ import data.Database;
 import model.BankAccount;
 
 @SuppressWarnings("serial")
-public class HomeView extends JPanel implements ActionListener {
+public class WithdrawView extends JPanel implements ActionListener {
 	
 	private ViewManager manager;		// manages interactions between the views, model, and database
 	private JButton powerButton;
-	private JButton logoutButton;
-	private JButton depositButton;
+	private JButton backButton;
 	private JButton withdrawButton;
-	private JButton transferButton;
-	private JLabel welcomeLabel;
+	
+	private JTextField withdrawField;
 	
 	public static final String NL = System.getProperty("line.separator");  
 	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
@@ -40,11 +40,10 @@ public class HomeView extends JPanel implements ActionListener {
 	 * @param manager
 	 */
 	
-	public HomeView(ViewManager manager) {
+	public WithdrawView(ViewManager manager) {
 		super();
 		
 		this.manager = manager;
-		this.welcomeLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
 	}
 	
@@ -61,19 +60,23 @@ public class HomeView extends JPanel implements ActionListener {
 		this.add(new javax.swing.JLabel("HomeView", javax.swing.SwingConstants.CENTER));
 		
 		initPowerButton();
-		initWelcomeLabel();
-		initLogoutButton();
-		initDepositButton();
+		initBackButton();
 		initWithdrawButton();
-		initTransferButton();
+		initWithdrawField();
 	}
-	public void initWelcomeLabel() {
-		welcomeLabel.setBounds(0, 240, 500, 35);
-		welcomeLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
-		welcomeLabel.setText(manager.welcome());
+	
+	private void initWithdrawField() {
+		JLabel label = new JLabel("Amount to Withdraw");
+		label.setBounds(50, 70, 100, 35);
+		label.setLabelFor(withdrawField);
+		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
+		withdrawField = new JTextField(20);
+		withdrawField.setBounds(160, 70, 240, 35);
 		
-		this.add(welcomeLabel);
+		this.add(label);
+		this.add(withdrawField);
+		
 	}
 	
 	private void initPowerButton() {
@@ -91,27 +94,17 @@ public class HomeView extends JPanel implements ActionListener {
 		this.add(powerButton);
 	}
 	
-	private void initLogoutButton() {
-		logoutButton = new JButton("Log Out");
-		logoutButton.setBounds(100, 300, 300, 20);
-		logoutButton.addActionListener(this);
+	private void initBackButton() {
+		backButton = new JButton("Back");
+		backButton.setBounds(100, 300, 300, 20);
+		backButton.addActionListener(this);
 		
-		this.add(logoutButton);
-	}
-	
-	private void initDepositButton() {
-		depositButton = new JButton("Deposit");
-		this.add(depositButton);
+		this.add(backButton);
 	}
 	
 	private void initWithdrawButton() {
-		withdrawButton = new JButton("Withdraw");
+		withdrawButton = new JButton("Transfer");
 		this.add(withdrawButton);
-	}
-	
-	private void initTransferButton() {
-		transferButton = new JButton("Transfer");
-		this.add(transferButton);
 	}
 	
 	/*
@@ -136,14 +129,8 @@ public class HomeView extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if (source.equals(logoutButton)) {
-			manager.switchTo(ATM.LOGIN_VIEW);
-		}
-		else if (source.equals(depositButton)) {
-			manager.switchTo(ATM.DEPOSIT_VIEW);
-		}
-		else if (source.equals(withdrawButton)) {
-			manager.switchTo(ATM.WITHDRAW_VIEW);
+		if (source.equals(backButton)) {
+			manager.switchTo(ATM.HOME_VIEW);
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

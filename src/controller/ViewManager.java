@@ -3,6 +3,8 @@ package controller;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.Font;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,43 +57,12 @@ public class ViewManager {
 				lv.updateErrorMessage("Invalid account number and/or PIN.");
 			} else {
 				switchTo(ATM.HOME_VIEW);
-				//System.out.println(account.getAccountNumber());
-				//hv.initWelcomeLabel();
+				hv.initWelcomeLabel();
 			}
 		} catch (NumberFormatException e) {
 			lv.updateErrorMessage("Account numbers and PINs don't have letters.");
 		}
 	}
-	
-	/*public void login(String accountNumber, char[] pin) {
-		String userPin = new String(pin);
-		
-		if (accountNumber != null && userPin != null && accountNumber.length() > 0 && userPin.length() > 0) {
-			setAccount(db.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin))));
-			
-			if (getAccount() == null) {
-				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
-				lv.updateErrorMessage("Invalid account number and/or PIN.");
-			} else {
-				HomeView hv = ((HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
-				switchTo(ATM.HOME_VIEW);
-				hv.initWelcomeLabel();
-				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
-				lv.updateErrorMessage("");
-			}
-		}
-	}*/
-	
-	/*public void createAccount(){
-		try {			
-			JOptionPane.showConfirmDialog(
-				views,
-				"Successfully Created Account! Your account number is be " + (db.getMaxAccountNumber() + 1) + "."
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
 	
 	/**
 	 * Switches the active (or visible) view upon request.
@@ -150,12 +121,22 @@ public class ViewManager {
 			e.printStackTrace();
 		}
 	}
-	//public String welcome() {
-		/*String welcome =  "Welcome, " + " " + account.getAccountNumber() + 
-				NL + "Account Number: " + NL + "Balance: ";
-		return welcome;*/
-		//return null;
-	//}
+	public String welcome() {
+		try {
+			String firstName = account.getUser().getFirstName();
+			String lastName = account.getUser().getLastName();
+			
+			String welcome =  "Welcome, " + firstName + " " + lastName  + 
+					"\n" + "Account Number: " + account.getAccountNumber() +
+					"\n" + "Balance: " + NumberFormat.getCurrencyInstance(Locale.US).format(account.getBalance());
+					// currency format cited from https://stackoverflow.com/questions/2379221/java-currency-number-format
+			System.out.println(welcome);
+			return welcome;
+		}
+		catch (NullPointerException e) {
+			return "Null Pointer";
+		}
+	}
 	public BankAccount getAccount() {
 		return account;
 	}
