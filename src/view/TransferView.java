@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.InvalidParameterException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ public class TransferView extends JPanel implements ActionListener {
 	private JButton powerButton;
 	private JButton backButton;
 	private JButton transferButton;
+	private JLabel errorMessageLabel;
 	
 	private JTextField transferField;
 	private JTextField recepientField;
@@ -45,9 +47,13 @@ public class TransferView extends JPanel implements ActionListener {
 		super();
 		
 		this.manager = manager;
+		this.errorMessageLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
 	}
 	
+	public void updateErrorMessage(String errorMessage) {
+		errorMessageLabel.setText(errorMessage);
+	}
 	///////////////////// PRIVATE METHODS /////////////////////////////////////////////
 	
 	/*
@@ -65,29 +71,32 @@ public class TransferView extends JPanel implements ActionListener {
 		initTransferButton();
 		initTransferField();
 		initRecepientField();
+		initErrorMessageLabel();
 	}
 	
 	private void initTransferField() {
 		JLabel label = new JLabel("Amount to Transfer");
-		label.setBounds(50, 70, 200, 35);
+		label.setBounds(50, 140, 200, 35);
 		label.setLabelFor(transferField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		transferField = new JTextField(20);
-		transferField.setBounds(260, 70, 150, 40);
+		transferField.setBounds(260, 140, 150, 40);
 		
 		this.add(label);
 		this.add(transferField);
 		
 	}
+	
+	
 	private void initRecepientField() {
 		JLabel label = new JLabel("Account Number of Recepient");
-		label.setBounds(30, 140, 220, 35);
+		label.setBounds(30, 70, 220, 35);
 		label.setLabelFor(recepientField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		recepientField = new JTextField(20);
-		recepientField.setBounds(260, 140, 150, 40);
+		recepientField.setBounds(260, 70, 150, 40);
 		
 		this.add(label);
 		this.add(recepientField);
@@ -107,6 +116,13 @@ public class TransferView extends JPanel implements ActionListener {
 		
 		this.add(powerButton);
 	}
+	private void initErrorMessageLabel() {
+		errorMessageLabel.setBounds(0, 420, 500, 35);
+		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		errorMessageLabel.setForeground(Color.RED);
+		
+		this.add(errorMessageLabel);
+	}
 	
 	private void initBackButton() {
 		backButton = new JButton("Back");
@@ -118,6 +134,8 @@ public class TransferView extends JPanel implements ActionListener {
 	
 	private void initTransferButton() {
 		transferButton = new JButton("Transfer");
+		transferButton.setBounds(150, 200, 200, 60);
+		transferButton.addActionListener(this);
 		this.add(transferButton);
 	}
 	
@@ -140,11 +158,49 @@ public class TransferView extends JPanel implements ActionListener {
 	 * @param e
 	 */
 	
+	private void setValues(){
+		long accountNumber = Long.valueOf(recepientField.getText());
+		
+		double amount = Double.valueOf(transferField.getText());
+		
+		if (String.valueOf(accountNumber).length() != 9) {
+			throw new InvalidParameterException("Please enter a valid account number");
+		}
+		else if (String.valueOf(amount).length() == 0) {
+			throw new InvalidParameterException("Please enter a valid amount");
+		}
+		
+		manager.transfer(accountNumber, amount);
+		
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if (source.equals(backButton)) {
+		if (source.equals(transferButton)) {
+			try {
+				setValues();
+				manager.switchTo(ATM.HOME_VIEW);
+				manager.showLabels();
+				this.removeAll();
+				this.initialize();
+				updateErrorMessage("");
+			}
+			catch (NumberFormatException e1) {
+				updateErrorMessage("Please complete all fields correctly");
+			}
+			catch (InvalidParameterException e2) {
+				updateErrorMessage(e2.getMessage());
+			}
+			catch (NullPointerException e3) {
+				updateErrorMessage("Null Pointer");
+			}
+		}
+		else if (source.equals(backButton)) {
 			manager.switchTo(ATM.HOME_VIEW);
+			this.removeAll();
+			this.initialize();
+			updateErrorMessage("");
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

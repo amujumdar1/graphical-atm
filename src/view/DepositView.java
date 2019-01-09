@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.InvalidParameterException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ public class DepositView extends JPanel implements ActionListener {
 	private JButton powerButton;
 	private JButton backButton;
 	private JButton depositButton;
+	private JLabel errorMessageLabel;
 	
 	private JTextField depositField;
 	
@@ -44,7 +46,12 @@ public class DepositView extends JPanel implements ActionListener {
 		super();
 		
 		this.manager = manager;
+		this.errorMessageLabel = new JLabel("", SwingConstants.CENTER);
+
 		initialize();
+	}
+	public void updateErrorMessage(String errorMessage) {
+		errorMessageLabel.setText(errorMessage);
 	}
 	
 	///////////////////// PRIVATE METHODS /////////////////////////////////////////////
@@ -63,6 +70,7 @@ public class DepositView extends JPanel implements ActionListener {
 		initBackButton();
 		initDepositButton();
 		initDepositField();
+		initErrorMessageLabel();
 	}
 	
 	private void initDepositField() {
@@ -103,9 +111,27 @@ public class DepositView extends JPanel implements ActionListener {
 	
 	private void initDepositButton() {
 		depositButton = new JButton("Deposit");
+		depositButton.setBounds(150, 200, 200, 60);
+		depositButton.addActionListener(this);
 		this.add(depositButton);
 	}
+	private void initErrorMessageLabel() {
+		errorMessageLabel.setBounds(0, 420, 500, 35);
+		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		errorMessageLabel.setForeground(Color.RED);
+		
+		this.add(errorMessageLabel);
+	}
 	
+	private void setValues() {
+		double amount = Double.valueOf(depositField.getText());
+		
+		if (String.valueOf(amount).length() == 0) {
+			throw new InvalidParameterException("Please enter a valid amount");
+		}
+		
+		manager.deposit(amount);
+	}
 	/*
 	 * HomeView is not designed to be serialized, and attempts to serialize will throw an IOException.
 	 * 
@@ -128,11 +154,31 @@ public class DepositView extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if (source.equals(backButton)) {
-			manager.switchTo(ATM.HOME_VIEW);
-		}
-		else if (source.equals(depositButton)) {
+		if (source.equals(depositButton)) {
+			try {
+				setValues();
+				manager.switchTo(ATM.HOME_VIEW);
+				manager.showLabels();
+				this.removeAll();
+				initialize();
+				updateErrorMessage("");
+			}
+			catch (NumberFormatException e1) {
+				updateErrorMessage("Please complete all fields correctly");
+			}
+			catch (InvalidParameterException e2) {
+				updateErrorMessage(e2.getMessage());
+			}
+			catch (NullPointerException e3) {
+				updateErrorMessage("Null pointer");
+			}
 			
+		}
+		else if (source.equals(backButton)) {
+			manager.switchTo(ATM.HOME_VIEW);
+			this.removeAll();
+			this.initialize();
+			updateErrorMessage("");
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.InvalidParameterException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 	private JButton powerButton;
 	private JButton backButton;
 	private JButton withdrawButton;
+	private JLabel errorMessageLabel;
 	
 	private JTextField withdrawField;
 	
@@ -44,6 +46,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 		super();
 		
 		this.manager = manager;
+		this.errorMessageLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
 	}
 	
@@ -63,6 +66,10 @@ public class WithdrawView extends JPanel implements ActionListener {
 		initBackButton();
 		initWithdrawButton();
 		initWithdrawField();
+		initErrorMessageLabel();
+	}
+	public void updateErrorMessage(String errorMessage) {
+		errorMessageLabel.setText(errorMessage);
 	}
 	
 	private void initWithdrawField() {
@@ -101,9 +108,18 @@ public class WithdrawView extends JPanel implements ActionListener {
 		
 		this.add(backButton);
 	}
+	private void initErrorMessageLabel() {
+		errorMessageLabel.setBounds(0, 420, 500, 35);
+		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
+		errorMessageLabel.setForeground(Color.RED);
+		
+		this.add(errorMessageLabel);
+	}
 	
 	private void initWithdrawButton() {
-		withdrawButton = new JButton("Transfer");
+		withdrawButton = new JButton("Withdraw");
+		withdrawButton.setBounds(150, 200, 200, 60);
+		withdrawButton.addActionListener(this);
 		this.add(withdrawButton);
 	}
 	
@@ -118,6 +134,15 @@ public class WithdrawView extends JPanel implements ActionListener {
 		throw new IOException("ERROR: The HomeView class is not serializable.");
 	}
 	
+	private void setValues() {
+		double amount = Double.valueOf(withdrawField.getText());
+		
+		if (String.valueOf(amount).length() == 0) {
+			throw new InvalidParameterException("Please enter a valid amount");
+		}
+		manager.withdraw(amount);
+	}
+	
 	///////////////////// OVERRIDDEN METHODS //////////////////////////////////////////
 	
 	/*
@@ -129,8 +154,29 @@ public class WithdrawView extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if (source.equals(backButton)) {
+		if (source.equals(withdrawButton)) {
+			try {
+				setValues();
+				manager.switchTo(ATM.HOME_VIEW);
+				manager.showLabels();
+				this.removeAll();
+				this.initialize();
+				updateErrorMessage("");
+			}
+			catch (NumberFormatException e1) {
+				updateErrorMessage("Please complete all fields correctly");
+			}
+			catch (InvalidParameterException e2) {
+				updateErrorMessage(e2.getMessage());
+			}
+			catch (NullPointerException e3) {
+				updateErrorMessage("Null pointer");
+			}
+		}
+		else if (source.equals(backButton)) {
 			manager.switchTo(ATM.HOME_VIEW);
+			this.removeAll();
+			this.initialize();
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

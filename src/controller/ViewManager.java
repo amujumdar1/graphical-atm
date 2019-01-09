@@ -3,6 +3,7 @@ package controller;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.Font;
+import java.security.InvalidParameterException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -22,7 +23,6 @@ public class ViewManager {
 
 	private BankAccount account;			// the user's bank account
 	private BankAccount destination;		// an account to which the user can transfer funds
-	private JLabel welcomeLabel;
 	
 	public static final String NL = System.getProperty("line.separator");  
 	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
@@ -48,7 +48,7 @@ public class ViewManager {
 	 */
 	public void login(String accountNumber, char[] pin) {
 		LoginView lv = (LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX];
-		HomeView hv = (HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX];
+		
 		
 		try {
 			account = database.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin)));
@@ -57,9 +57,7 @@ public class ViewManager {
 				lv.updateErrorMessage("Invalid account number and/or PIN.");
 			} else {
 				switchTo(ATM.HOME_VIEW);
-				hv.initWelcomeLabel();
-				hv.initAccountNumberLabel();
-				hv.initBalanceLabel();
+				showLabels();
 			}
 		} catch (NumberFormatException e) {
 			lv.updateErrorMessage("Account numbers and PINs don't have letters.");
@@ -71,6 +69,12 @@ public class ViewManager {
 	 * 
 	 * @param view
 	 */
+	public void showLabels() {
+		HomeView hv = (HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX];
+		hv.initWelcomeLabel();
+		hv.initAccountNumberLabel();
+		hv.initBalanceLabel();
+	}
 	
 	public void insertAccount() {
 		database.insertAccount(account);
@@ -86,6 +90,7 @@ public class ViewManager {
 	 */
 	
 	public void logout() {
+		LoginView lv = (LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX];
 		try {			
 			int choice = JOptionPane.showConfirmDialog(
 				views,
@@ -99,6 +104,9 @@ public class ViewManager {
 				this.setAccount(null);
 				this.setDestination(null);
 				switchTo(ATM.LOGIN_VIEW);
+				lv.removeAll();
+				lv.initialize();
+				lv.updateErrorMessage("");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,8 +162,62 @@ public class ViewManager {
 		catch (NullPointerException e) {
 			return "Invalid Balance";
 		}
-			}
+	}
 	
+	public void transfer(long accountNumber, double amount) {
+		try {
+			this.destination = database.getAccount(accountNumber);
+		}
+		catch (NullPointerException e) {
+			this.destination = null;
+		}
+		
+		int status =  account.transfer(destination, amount);
+		
+		switch(status) {
+			case ATM.ACCOUNT_NOT_FOUND:
+				throw new InvalidParameterException("Account was not found");
+			case ATM.INVALID_AMOUNT:
+				throw new InvalidParameterException("Please enter a valid amount");
+			case ATM.INSUFFICIENT_FUNDS:
+				throw new InvalidParameterException("You have insufficient funds to complete this transfer");
+			case ATM.SUCCESS:
+				database.updateAccount(this.account);
+				database.updateAccount(this.destination);
+				break;
+			default:
+				throw new InvalidParameterException("Something went wrong. Please try again.");
+		}
+	}
+	
+	public void deposit(double amount) {
+		int status = account.deposit(amount);
+		
+		switch(status) {
+			case ATM.INVALID_AMOUNT:
+				throw new InvalidParameterException("Please enter a valid amount");
+			case ATM.SUCCESS:
+				database.updateAccount(account);
+				break;
+			default:
+				throw new InvalidParameterException("Something went wrong. Please try again.");
+		}
+	}
+	
+	public void withdraw(double amount) {
+		int status = account.withdraw(amount);
+		switch(status) {
+			case ATM.INVALID_AMOUNT:
+				throw new InvalidParameterException("Please enter a valid amount");
+			case ATM.INSUFFICIENT_FUNDS:
+				throw new InvalidParameterException("You have insufficient funds to complete this transfer");
+			case ATM.SUCCESS:
+				database.updateAccount(account);
+				break;
+			default:
+				throw new InvalidParameterException("Something went wrong. Please try again.");
+		}
+	}
 	
 	public BankAccount getAccount() {
 		return account;
@@ -165,18 +227,10 @@ public class ViewManager {
 		this.account = account;
 	}
 
-	public BankAccount getDestination() {
-		return destination;
-	}
-
 	public void setDestination(BankAccount destination) {
 		this.destination = destination;
 	}
 	public Database getDatabase() {
 		return database;
-	}
-
-	public void setDatabase(Database database) {
-		this.database = database;
 	}
 }

@@ -63,7 +63,7 @@ public class LoginView extends JPanel implements ActionListener {
 	 * Initializes the LoginView components.
 	 */
 	
-	private void initialize() {
+	public void initialize() {
 		this.setLayout(null);
 		
 		initAccountField();
@@ -190,12 +190,12 @@ public class LoginView extends JPanel implements ActionListener {
 		
 		if (source.equals(loginButton)) {
 			manager.login(accountField.getText(), pinField.getPassword());
-			removeAll();
-			initialize();
+			
 		} else if (source.equals(createButton)) {
 			manager.switchTo(ATM.CREATE_VIEW);
 			removeAll();
 			initialize();
+			updateErrorMessage("");
 		} else if (source.equals(powerButton)) {
 			manager.shutdown();
 		} else {
