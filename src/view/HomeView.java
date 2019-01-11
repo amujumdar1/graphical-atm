@@ -29,6 +29,7 @@ public class HomeView extends JPanel implements ActionListener {
 	private JButton depositButton;
 	private JButton withdrawButton;
 	private JButton transferButton;
+	private JButton informationButton;
 	private JLabel welcomeLabel;
 	private JLabel accountNumberLabel;
 	private JLabel balanceLabel;
@@ -72,6 +73,7 @@ public class HomeView extends JPanel implements ActionListener {
 		initTransferButton();
 		initAccountNumberLabel();
 		initBalanceLabel();
+		initInformationButton();
 	}
 	public void initWelcomeLabel() {
 		welcomeLabel.setBounds(150, 5, 200, 35);
@@ -117,7 +119,7 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initLogoutButton() {
 		logoutButton = new JButton("Log Out");
-		logoutButton.setBounds(150, 280, 200, 40);
+		logoutButton.setBounds(150, 350, 200, 40);
 		logoutButton.addActionListener(this);
 		
 		this.add(logoutButton);
@@ -142,6 +144,13 @@ public class HomeView extends JPanel implements ActionListener {
 		transferButton.setBounds(150, 210, 200, 40);
 		transferButton.addActionListener(this);
 		this.add(transferButton);
+	}
+	
+	private void initInformationButton() {
+		informationButton = new JButton("View / Edit Information");
+		informationButton.setBounds(150, 280, 200, 40);
+		informationButton.addActionListener(this);
+		this.add(informationButton);
 	}
 	
 	/*
@@ -177,6 +186,9 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		else if (source.equals(transferButton)) {
 			manager.switchTo(ATM.TRANSFER_VIEW);
+		}
+		else if (source.equals(informationButton)) {
+			manager.switchTo(ATM.INFORMATION_VIEW);
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

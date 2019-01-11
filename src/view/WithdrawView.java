@@ -177,6 +177,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 			manager.switchTo(ATM.HOME_VIEW);
 			this.removeAll();
 			this.initialize();
+			updateErrorMessage("");
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();

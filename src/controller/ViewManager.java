@@ -210,7 +210,7 @@ public class ViewManager {
 			case ATM.INVALID_AMOUNT:
 				throw new InvalidParameterException("Please enter a valid amount");
 			case ATM.INSUFFICIENT_FUNDS:
-				throw new InvalidParameterException("You have insufficient funds to complete this transfer");
+				throw new InvalidParameterException("You have insufficient funds to complete this withdrawl");
 			case ATM.SUCCESS:
 				database.updateAccount(account);
 				break;
