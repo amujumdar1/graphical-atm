@@ -121,12 +121,6 @@ public class ATM extends JFrame {
 					 * You'll need to add the required import statements for it to compile.
 					 */
 					
-//					for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//						if (info.getName().equals("Nimbus")) {
-//							UIManager.setLookAndFeel(laf.getClassName());
-//						}
-//					}
-					
 					new ATM().initialize();
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -33,9 +33,6 @@ public class DepositView extends JPanel implements ActionListener {
 	
 	private JTextField depositField;
 	
-	public static final String NL = System.getProperty("line.separator");  
-	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
-	
 	/**
 	 * Constructs an instance (or objects) of the HomeView class.
 	 * 

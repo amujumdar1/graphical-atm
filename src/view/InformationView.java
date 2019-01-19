@@ -38,17 +38,12 @@ public class InformationView extends JPanel implements ActionListener {
 	private JComboBox<String> stateField;
 	private JTextField postalField;
 	private JPasswordField pinField;
-	private JButton finalCreateButton;
+	private JButton editButton;
 	private JButton powerButton;
 	private JButton cancelButton;
 	private JLabel errorMessageLabel;
 	
-	private JTextField initDOBField;
-	private JTextField initStateField;
-	private JTextField initPhoneNumberField;
-	
 	private BankAccount account;
-	private User user;
 	
 	/**
 	 * Constructs an instance (or object) of the CreateView class.
@@ -64,6 +59,10 @@ public class InformationView extends JPanel implements ActionListener {
 		initialize();
 	}
 	
+	public void initAccount(BankAccount account) {
+		this.account = account;
+	}
+	
 	public void updateErrorMessage(String errorMessage) {
 		errorMessageLabel.setText(errorMessage);
 	}
@@ -75,49 +74,52 @@ public class InformationView extends JPanel implements ActionListener {
 	 */
 	
 	private void initialize() {
-		initPowerButton();
 		this.setLayout(null);
-		
+		initPowerButton();
+		initEditButton();
+		initCancelButton();
+		initErrorMessageLabel();
+	}
+	
+	public void initInformation() {
+		initAccountNumberField();
 		initFirstNameField();
 		initLastNameField();
 		initBirthDateField();
 		initPhoneNumberInput();
 		initAddressField();
 		initPinField();
-		initFinalCreateButton();
-		initErrorMessageLabel();
-		initCancelButton();
-		
 	}
 	
-	private void initTextFields() {
-		User user = manager.getAccount().getUser();
+	private void initAccountNumberField() {
+		JLabel label = new JLabel("Account Number");
+		label.setLayout(null);
+		label.setBounds(50, 25, 150, 35);
+		label.setLabelFor(accountNumberField);
+		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
-		accountNumberField.setText(manager.getAccount().getAccountNumber() + "");
-		firstNameField.setText(user.getFirstName());
-		lastNameField.setText(user.getLastName());
-		streetAddressField.setText(user.getStreetAddress());
-		cityField.setText(user.getCity());
-		initStateField.setText(user.getState());
-		postalField.setText(user.getZip());
-		initDOBField.setText(user.getFormattedDob());
-		initPhoneNumberField.setText(user.getFormattedPhone());
+		accountNumberField = new JTextField(20);
+		accountNumberField.setBounds(200, 25, 200, 35);
+		accountNumberField.setText(Long.toString(account.getAccountNumber()));
+		accountNumberField.setEditable(false);
 		
-		
+		this.add(label);
+		this.add(accountNumberField);
 	}
 	
 	private void initFirstNameField() {
 		
 		JLabel label = new JLabel("First Name");
 		label.setLayout(null);
-		label.setBounds(50, 25, 100, 35);
+		label.setBounds(50, 70, 100, 35);
 		label.setLabelFor(firstNameField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		firstNameField = new JTextField(20);
-		firstNameField.setBounds(160, 25, 240, 35);
+		firstNameField.setBounds(160, 70, 240, 35);
+		firstNameField.setText(account.getUser().getFirstName());
 		
-		limitSize(firstNameField, 15);
+		firstNameField.setEditable(false);
 		
 		this.add(label);
 		this.add(firstNameField);
@@ -126,14 +128,15 @@ public class InformationView extends JPanel implements ActionListener {
 	
 	private void initLastNameField() {
 		JLabel label = new JLabel("Last Name");
-		label.setBounds(50, 70, 100, 35);
+		label.setBounds(50, 110, 100, 35);
 		label.setLabelFor(lastNameField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		lastNameField = new JTextField(20);
-		lastNameField.setBounds(160, 70, 240, 35);
+		lastNameField.setBounds(160, 110, 240, 35);
+		lastNameField.setText(account.getUser().getLastName());
 		
-		limitSize(lastNameField, 20);
+		lastNameField.setEditable(false);
 		
 		this.add(label);
 		this.add(lastNameField);
@@ -141,7 +144,7 @@ public class InformationView extends JPanel implements ActionListener {
 	
 	private void initBirthDateField() {
 		JLabel label = new JLabel("DOB (MM/DD/YYYY)");
-		label.setBounds(50, 110, 200, 35);
+		label.setBounds(50, 150, 200, 35);
 		
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		/*String[] month = {"January", "February", "March", "April", "May", 
@@ -152,8 +155,9 @@ public class InformationView extends JPanel implements ActionListener {
 		}
 		
 		monthField = new JComboBox<Integer>(month);
-		monthField.setBounds(200, 110, 50, 35);
-		
+		monthField.setBounds(200, 150, 50, 35);
+		monthField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(0,2));
+		monthField.setEnabled(false);
 		this.add(label);
 		this.add(monthField);
 		
@@ -163,7 +167,9 @@ public class InformationView extends JPanel implements ActionListener {
 		}
 		
 		dayField = new JComboBox<Integer>(day);
-		dayField.setBounds(270, 110, 50, 35);
+		dayField.setBounds(270, 150, 50, 35);
+		dayField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(2,4));
+		dayField.setEnabled(false);
 		this.add(dayField);
 		
 		Integer[] year = new Integer[120];
@@ -173,20 +179,23 @@ public class InformationView extends JPanel implements ActionListener {
 		}
 		
 		yearField = new JComboBox<Integer>(year);
-		yearField.setBounds(330, 110, 70, 35);
+		yearField.setBounds(330, 150, 70, 35);
+		yearField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(4));
+		yearField.setEnabled(false);
 		this.add(yearField);
 		
 	}
 	
 	private void initPhoneNumberInput() {
 		JLabel label = new JLabel("Phone Number");
-		label.setBounds(50, 150, 100, 35);
+		label.setBounds(50, 195, 100, 35);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		phoneNumber1Field = new JTextField(3);
 
-		phoneNumber1Field.setBounds(160, 150, 80, 35);
-		
+		phoneNumber1Field.setBounds(160, 195, 80, 35);
+		phoneNumber1Field.setText(Long.toString(account.getUser().getPhone()).substring(0,3));
+		phoneNumber1Field.setEditable(false);
 		limitToIntegers(phoneNumber1Field);
 		limitSize(phoneNumber1Field, 3);
 		
@@ -194,8 +203,11 @@ public class InformationView extends JPanel implements ActionListener {
 		this.add(phoneNumber1Field);
 		
 		phoneNumber2Field = new JTextField(3);
+		phoneNumber2Field.setEditable(false);
 
-		phoneNumber2Field.setBounds(240, 150, 80, 35);
+		phoneNumber2Field.setBounds(240, 195, 80, 35);
+		phoneNumber2Field.setText(Long.toString(account.getUser().getPhone()).substring(3,6));
+
 		
 		limitToIntegers(phoneNumber2Field);
 		limitSize(phoneNumber2Field, 3);
@@ -205,8 +217,9 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		phoneNumber3Field = new JTextField(4);
 
-		phoneNumber3Field.setBounds(320, 150, 80, 35);
-		
+		phoneNumber3Field.setBounds(320, 195, 80, 35);
+		phoneNumber3Field.setText(Long.toString(account.getUser().getPhone()).substring(6));
+		phoneNumber3Field.setEditable(false);
 		limitToIntegers(phoneNumber3Field);
 		limitSize(phoneNumber3Field, 4);
 		
@@ -217,24 +230,28 @@ public class InformationView extends JPanel implements ActionListener {
 	
 	private void initAddressField() {
 		JLabel streetLabel = new JLabel("Address");
-		streetLabel.setBounds(50, 195, 100, 35);
+		streetLabel.setBounds(50, 240, 100, 35);
 		streetLabel.setLabelFor(streetAddressField);
 		streetLabel.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		streetAddressField = new JTextField(20);
-		streetAddressField.setBounds(160, 195, 240, 35);
+		streetAddressField.setBounds(160, 240, 240, 35);
+		streetAddressField.setText(account.getUser().getStreetAddress());
+		streetAddressField.setEditable(false);
 		limitSize(streetAddressField, 30);
 		
 		this.add(streetLabel);
 		this.add(streetAddressField);
 		
 		JLabel cityLabel = new JLabel("City");
-		cityLabel.setBounds(50, 240, 100, 35);
+		cityLabel.setBounds(50, 290, 100, 35);
 		cityLabel.setLabelFor(cityField);
 		cityLabel.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		cityField = new JTextField(20);
-		cityField.setBounds(100, 240, 150, 35);
+		cityField.setBounds(100, 290, 150, 35);
+		cityField.setEditable(false);
+		cityField.setText(account.getUser().getCity());
 		
 		limitSize(cityField, 30);
 		
@@ -242,7 +259,7 @@ public class InformationView extends JPanel implements ActionListener {
 		this.add(cityField);
 		
 		JLabel stateLabel = new JLabel("State");
-		stateLabel.setBounds(270, 240, 100, 35);
+		stateLabel.setBounds(270, 290, 100, 35);
 		
 		
 		stateLabel.setFont(new Font("DialogInput", Font.BOLD, 14));
@@ -302,18 +319,21 @@ public class InformationView extends JPanel implements ActionListener {
 				"WI", 
 				"WY"};
 		stateField = new JComboBox<>(states);
-		stateField.setBounds(320, 240, 60, 35);
+		stateField.setBounds(320, 290, 60, 35);
+		stateField.setSelectedItem(account.getUser().getState());
+		stateField.setEnabled(false);
 		this.add(stateLabel);
 		this.add(stateField);
 		
 		JLabel postalLabel = new JLabel("Postal Code");
-		postalLabel.setBounds(50, 290, 100, 35);
+		postalLabel.setBounds(50, 340, 100, 35);
 		postalLabel.setLabelFor(postalField);
 		postalLabel.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		postalField = new JTextField(20);
-		postalField.setBounds(160, 290, 100, 35);
-		
+		postalField.setBounds(160, 340, 100, 35);
+		postalField.setText(account.getUser().getZip());
+		postalField.setEditable(false);
 		limitSize(postalField, 5);
 		//limitToIntegers(postalField);
 		
@@ -323,12 +343,13 @@ public class InformationView extends JPanel implements ActionListener {
 	
 	private void initPinField(){
 		JLabel label = new JLabel("PIN");
-		label.setBounds(50, 340, 95, 35);
+		label.setBounds(280, 340, 95, 35);
 		label.setLabelFor(pinField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		pinField = new JPasswordField(20);
-		pinField.setBounds(160, 340, 100, 35);
+		pinField.setBounds(320, 340, 100, 35);
+		pinField.setText(Integer.toString(account.getUser().getPin()));
 		
 		limitToIntegers(pinField);
 		limitSize(pinField, 4);
@@ -365,20 +386,20 @@ public class InformationView extends JPanel implements ActionListener {
 	}
 	
 	private void initCancelButton() {
-		cancelButton = new JButton("Cancel");
-		cancelButton.setBounds(50, 390, 120, 40);
+		cancelButton = new JButton("Go Back to Home");
+		cancelButton.setBounds(50, 390, 160, 40);
 		
 		cancelButton.addActionListener(this);
 		this.add(cancelButton);
 	}
 	
-	private void initFinalCreateButton() {
+	private void initEditButton() {
 		
-		finalCreateButton = new JButton("Create Account");
-		finalCreateButton.setBounds(180, 390, 200, 40);
-		finalCreateButton.addActionListener(this);
+		editButton = new JButton("Edit");
+		editButton.setBounds(230, 390, 160, 40);
+		editButton.addActionListener(this);
 		
-		this.add(finalCreateButton);
+		this.add(editButton);
 	}
 	
 	private void initPowerButton() {
@@ -418,18 +439,25 @@ public class InformationView extends JPanel implements ActionListener {
 		});
 	}
 	
+	private void edit(boolean edit) {
+		streetAddressField.setEditable(edit);
+		cityField.setEditable(edit);
+		stateField.setEnabled(edit);
+		postalField.setEditable(edit);
+		phoneNumber1Field.setEditable(edit);
+		phoneNumber2Field.setEditable(edit);
+		phoneNumber3Field.setEditable(edit);
+		pinField.setEditable(edit);
+	}
+	
+	
 	@SuppressWarnings("deprecation")
-	private void setValues() throws NumberFormatException, SQLException {
+	private void setValues() {
 		
 		int pin = Integer.valueOf(pinField.getText());
 		if (String.valueOf(pin).length() != 4) {
 			throw new InvalidParameterException("Please enter a 4 digit PIN");
 		}
-		
-		String month = monthField.getSelectedItem() + "";
-		String day = dayField.getSelectedItem() + "";
-		String year = yearField.getSelectedItem() + "";
-		int dob = Integer.valueOf(month + day + year);
 		
 		String phoneNumber1 = phoneNumber1Field.getText();
 		String phoneNumber2 = phoneNumber2Field.getText();
@@ -440,9 +468,6 @@ public class InformationView extends JPanel implements ActionListener {
 			throw new InvalidParameterException("Please enter a valid Phone Number");
 		}
 		
-		String firstName = firstNameField.getText();
-		String lastName = lastNameField.getText();
-		
 		String streetAddress = streetAddressField.getText();
 		String city = cityField.getText();
 		String state = stateField.getSelectedItem() + "";
@@ -452,40 +477,41 @@ public class InformationView extends JPanel implements ActionListener {
 			throw new InvalidParameterException("Please enter a valid Postal Code");
 		}
 		
-		if (firstName.length() == 0|| lastName.length() == 0 || streetAddress.length() == 0 || city.length() == 0) {
+		if (streetAddress.length() == 0 || city.length() == 0) {
 			throw new InvalidParameterException("Please complete all fields");
 		}
+		account.getUser().setPin(account.getUser().getPin(), pin);
+		account.getUser().setPhone(phone);
+		account.getUser().setStreetAddress(streetAddress);
+		account.getUser().setCity(city);
+		account.getUser().setState(state);
+		account.getUser().setZip(postalCode);
 		
-		user = new User(pin, dob, phone, firstName, 
-				lastName, streetAddress,
-				city, state, postalCode);
-		
-		long accountNumber = manager.getDatabase().getMaxAccountNumber() + 1;
-		
-		if (accountNumber == -1) {
-			throw new InvalidParameterException("Error retreiving Account Number");
-		}
-		account = new BankAccount('Y', accountNumber, 0.0, user);
-		manager.setAccount(account); 
-		manager.getAccount().setUser(user);
 		manager.getDatabase().updateAccount(account);
-		
-			
-		// creates constructor for the account 
-		
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		
-		if (source.equals(finalCreateButton)) {
+		if (source.equals(editButton)) {
 			try {
-				setValues();
-				manager.login(manager.getAccount().getAccountNumber() + "",
-						String.valueOf(manager.getAccount().getUser().getPin()).toCharArray());
-				this.removeAll();
-				this.initialize();
-				updateErrorMessage("");
+				if (editButton.getText().equals("Edit")) {
+					editButton.setText("Save");
+					cancelButton.setText("Cancel");
+					edit(true);
+					updateErrorMessage("");
+				}
+				else if (editButton.getText().equals("Save")) {
+					setValues();
+					editButton.setText("Edit");
+					cancelButton.setText("Go Back to Home");
+					edit(false);
+					updateErrorMessage("");
+				}
+				else {
+					throw new InvalidParameterException("Something went wrong. Please try again.");
+				}
 			}
 			catch (NumberFormatException e2){
 				updateErrorMessage("Please complete all fields");
@@ -496,16 +522,25 @@ public class InformationView extends JPanel implements ActionListener {
 			catch(NullPointerException e4) {
 				updateErrorMessage("Null Pointer");
 			}
-			catch (SQLException e5) {
-				updateErrorMessage("SQL Exception");
-			}
 		} else if (source.equals(cancelButton)) {
+			if (cancelButton.getText().equals("Cancel")) {
+				cancelButton.setText("Go Back to Home");
+				editButton.setText("Edit");
+				this.initInformation();
+				edit(false);
+			}
+			else if (cancelButton.getText().equals("Go Back to Home")) {
+				manager.switchTo(ATM.HOME_VIEW);
+				this.removeAll();
+				this.initialize();
+				this.initInformation();
+				updateErrorMessage("");
+			}
+			else {
+				updateErrorMessage("Something went wrong.");
+			}
 			
-			manager.switchTo(ATM.LOGIN_VIEW);
-			this.removeAll();
-			this.initialize();
 			
-			updateErrorMessage("");
 		} else if (source.equals(powerButton)) {
 			manager.shutdown();
 		} else {

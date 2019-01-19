@@ -14,6 +14,7 @@ import data.Database;
 import model.BankAccount;
 import view.ATM;
 import view.HomeView;
+import view.InformationView;
 import view.LoginView;
 
 public class ViewManager {
@@ -25,7 +26,6 @@ public class ViewManager {
 	private BankAccount destination;		// an account to which the user can transfer funds
 	
 	public static final String NL = System.getProperty("line.separator");  
-	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
 	/**
 	 * Constructs an instance (or object) of the ViewManager class.
 	 * 
@@ -74,6 +74,14 @@ public class ViewManager {
 		hv.initWelcomeLabel();
 		hv.initAccountNumberLabel();
 		hv.initBalanceLabel();
+	}
+	
+	public void initInformationAccount() {
+		InformationView iv = (InformationView) views.getComponents()[ATM.INFORMATION_VIEW_INDEX];
+		iv.initAccount(account);
+		//System.out.println(account);
+		//System.out.println(account.getUser().getFirstName());
+		iv.initInformation();
 	}
 	
 	public void insertAccount() {
@@ -157,7 +165,6 @@ public class ViewManager {
 	public String showBalance() {
 		try {
 			return "Balance: " + NumberFormat.getCurrencyInstance(Locale.US).format(account.getBalance());
-			// currency format cited from https://stackoverflow.com/questions/2379221/java-currency-number-format
 		}
 		catch (NullPointerException e) {
 			return "Invalid Balance";

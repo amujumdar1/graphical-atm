@@ -34,9 +34,6 @@ public class HomeView extends JPanel implements ActionListener {
 	private JLabel accountNumberLabel;
 	private JLabel balanceLabel;
 	
-	public static final String NL = System.getProperty("line.separator");  
-	// creates new line variable cited from https://stackoverflow.com/questions/20706206/insert-line-break-in-java
-	
 	/**
 	 * Constructs an instance (or objects) of the HomeView class.
 	 * 
@@ -189,6 +186,7 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		else if (source.equals(informationButton)) {
 			manager.switchTo(ATM.INFORMATION_VIEW);
+			manager.initInformationAccount();
 		}
 		else if (source.equals(powerButton)) {
 			manager.shutdown();
