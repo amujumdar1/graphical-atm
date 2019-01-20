@@ -53,7 +53,7 @@ public class ViewManager {
 		try {
 			account = database.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin)));
 			
-			if (account == null) {
+			if (account == null || account.getStatus() == 'N') {
 				lv.updateErrorMessage("Invalid account number and/or PIN.");
 			} else {
 				switchTo(ATM.HOME_VIEW);
@@ -113,6 +113,35 @@ public class ViewManager {
 				lv.removeAll();
 				lv.initialize();
 				lv.updateErrorMessage("");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void close() {
+		LoginView lv = (LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX];
+		try {			
+			int choice = JOptionPane.showConfirmDialog(
+				views,
+				"Are you sure you want to close your account?",
+				"Close Account",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			
+			if (choice == 0) {
+				if (database.closeAccount(account)) {
+					this.setAccount(null);
+					this.setDestination(null);
+					switchTo(ATM.LOGIN_VIEW);
+					lv.removeAll();
+					lv.initialize();
+					lv.updateErrorMessage("");
+				}
+				else {
+					throw new Exception();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

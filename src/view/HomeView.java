@@ -30,6 +30,7 @@ public class HomeView extends JPanel implements ActionListener {
 	private JButton withdrawButton;
 	private JButton transferButton;
 	private JButton informationButton;
+	private JButton closeButton;
 	private JLabel welcomeLabel;
 	private JLabel accountNumberLabel;
 	private JLabel balanceLabel;
@@ -71,6 +72,7 @@ public class HomeView extends JPanel implements ActionListener {
 		initAccountNumberLabel();
 		initBalanceLabel();
 		initInformationButton();
+		initCloseButton();
 	}
 	public void initWelcomeLabel() {
 		welcomeLabel.setBounds(150, 5, 200, 35);
@@ -116,10 +118,18 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initLogoutButton() {
 		logoutButton = new JButton("Log Out");
-		logoutButton.setBounds(150, 350, 200, 40);
+		logoutButton.setBounds(150, 340, 200, 40);
 		logoutButton.addActionListener(this);
 		
 		this.add(logoutButton);
+	}
+	
+	private void initCloseButton() {
+		closeButton = new JButton("Close Account");
+		closeButton.setBounds(150, 400, 200, 40);
+		closeButton.addActionListener(this);
+		
+		this.add(closeButton);
 	}
 	
 	private void initDepositButton() {
@@ -174,6 +184,14 @@ public class HomeView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		if (source.equals(logoutButton)) {
 			manager.logout();
+		}
+		else if (source.equals(closeButton)) {
+			try {
+				manager.close();
+			}
+			catch (Exception e2) {
+				e2.printStackTrace();
+			}
 		}
 		else if (source.equals(depositButton)) {
 			manager.switchTo(ATM.DEPOSIT_VIEW);
