@@ -89,6 +89,25 @@ public class InformationView extends JPanel implements ActionListener {
 		initPhoneNumberInput();
 		initAddressField();
 		initPinField();
+		initTextFields();
+	}
+	
+	private void initTextFields() {
+		accountNumberField.setText(Long.toString(account.getAccountNumber()));
+		firstNameField.setText(account.getUser().getFirstName());
+		lastNameField.setText(account.getUser().getLastName());
+		monthField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(0,2));
+		dayField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(2,4));
+		yearField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(4));
+		phoneNumber1Field.setText(Long.toString(account.getUser().getPhone()).substring(0,3));
+		phoneNumber2Field.setText(Long.toString(account.getUser().getPhone()).substring(3,6));
+		phoneNumber3Field.setText(Long.toString(account.getUser().getPhone()).substring(6));
+		streetAddressField.setText(account.getUser().getStreetAddress());
+		cityField.setText(account.getUser().getCity());
+		stateField.setSelectedItem(account.getUser().getState());
+		postalField.setText(account.getUser().getZip());
+		pinField.setText(Integer.toString(account.getUser().getPin()));
+		pinField.setEchoChar('\u2022');
 	}
 	
 	private void initAccountNumberField() {
@@ -100,7 +119,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		accountNumberField = new JTextField(20);
 		accountNumberField.setBounds(200, 25, 200, 35);
-		accountNumberField.setText(Long.toString(account.getAccountNumber()));
+		
 		accountNumberField.setEditable(false);
 		
 		this.add(label);
@@ -117,7 +136,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		firstNameField = new JTextField(20);
 		firstNameField.setBounds(160, 70, 240, 35);
-		firstNameField.setText(account.getUser().getFirstName());
+		
 		
 		firstNameField.setEditable(false);
 		
@@ -134,7 +153,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		lastNameField = new JTextField(20);
 		lastNameField.setBounds(160, 110, 240, 35);
-		lastNameField.setText(account.getUser().getLastName());
+		
 		
 		lastNameField.setEditable(false);
 		
@@ -156,7 +175,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		monthField = new JComboBox<Integer>(month);
 		monthField.setBounds(200, 150, 50, 35);
-		monthField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(0,2));
+		
 		monthField.setEnabled(false);
 		this.add(label);
 		this.add(monthField);
@@ -168,7 +187,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		dayField = new JComboBox<Integer>(day);
 		dayField.setBounds(270, 150, 50, 35);
-		dayField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(2,4));
+		
 		dayField.setEnabled(false);
 		this.add(dayField);
 		
@@ -180,7 +199,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		yearField = new JComboBox<Integer>(year);
 		yearField.setBounds(330, 150, 70, 35);
-		yearField.setSelectedItem(Integer.toString(account.getUser().getDob()).substring(4));
+		
 		yearField.setEnabled(false);
 		this.add(yearField);
 		
@@ -194,7 +213,7 @@ public class InformationView extends JPanel implements ActionListener {
 		phoneNumber1Field = new JTextField(3);
 
 		phoneNumber1Field.setBounds(160, 195, 80, 35);
-		phoneNumber1Field.setText(Long.toString(account.getUser().getPhone()).substring(0,3));
+		
 		phoneNumber1Field.setEditable(false);
 		limitToIntegers(phoneNumber1Field);
 		limitSize(phoneNumber1Field, 3);
@@ -206,7 +225,7 @@ public class InformationView extends JPanel implements ActionListener {
 		phoneNumber2Field.setEditable(false);
 
 		phoneNumber2Field.setBounds(240, 195, 80, 35);
-		phoneNumber2Field.setText(Long.toString(account.getUser().getPhone()).substring(3,6));
+		
 
 		
 		limitToIntegers(phoneNumber2Field);
@@ -218,7 +237,7 @@ public class InformationView extends JPanel implements ActionListener {
 		phoneNumber3Field = new JTextField(4);
 
 		phoneNumber3Field.setBounds(320, 195, 80, 35);
-		phoneNumber3Field.setText(Long.toString(account.getUser().getPhone()).substring(6));
+		
 		phoneNumber3Field.setEditable(false);
 		limitToIntegers(phoneNumber3Field);
 		limitSize(phoneNumber3Field, 4);
@@ -236,7 +255,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		streetAddressField = new JTextField(20);
 		streetAddressField.setBounds(160, 240, 240, 35);
-		streetAddressField.setText(account.getUser().getStreetAddress());
+		
 		streetAddressField.setEditable(false);
 		limitSize(streetAddressField, 30);
 		
@@ -251,7 +270,7 @@ public class InformationView extends JPanel implements ActionListener {
 		cityField = new JTextField(20);
 		cityField.setBounds(100, 290, 150, 35);
 		cityField.setEditable(false);
-		cityField.setText(account.getUser().getCity());
+		
 		
 		limitSize(cityField, 30);
 		
@@ -320,7 +339,7 @@ public class InformationView extends JPanel implements ActionListener {
 				"WY"};
 		stateField = new JComboBox<>(states);
 		stateField.setBounds(320, 290, 60, 35);
-		stateField.setSelectedItem(account.getUser().getState());
+		
 		stateField.setEnabled(false);
 		this.add(stateLabel);
 		this.add(stateField);
@@ -332,7 +351,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		postalField = new JTextField(20);
 		postalField.setBounds(160, 340, 100, 35);
-		postalField.setText(account.getUser().getZip());
+		
 		postalField.setEditable(false);
 		limitSize(postalField, 5);
 		//limitToIntegers(postalField);
@@ -349,7 +368,7 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		pinField = new JPasswordField(20);
 		pinField.setBounds(320, 340, 100, 35);
-		pinField.setText(Integer.toString(account.getUser().getPin()));
+		
 		
 		limitToIntegers(pinField);
 		limitSize(pinField, 4);
@@ -448,6 +467,7 @@ public class InformationView extends JPanel implements ActionListener {
 		phoneNumber2Field.setEditable(edit);
 		phoneNumber3Field.setEditable(edit);
 		pinField.setEditable(edit);
+		pinField.setEchoChar('\u2022');
 	}
 	
 	
@@ -500,6 +520,7 @@ public class InformationView extends JPanel implements ActionListener {
 					editButton.setText("Save");
 					cancelButton.setText("Cancel");
 					edit(true);
+					pinField.setEchoChar((char) 0);
 					updateErrorMessage("");
 				}
 				else if (editButton.getText().equals("Save")) {
@@ -526,14 +547,16 @@ public class InformationView extends JPanel implements ActionListener {
 			if (cancelButton.getText().equals("Cancel")) {
 				cancelButton.setText("Go Back to Home");
 				editButton.setText("Edit");
-				this.initInformation();
+				initTextFields();
 				edit(false);
+				updateErrorMessage("");
 			}
 			else if (cancelButton.getText().equals("Go Back to Home")) {
 				manager.switchTo(ATM.HOME_VIEW);
 				this.removeAll();
 				this.initialize();
-				this.initInformation();
+				edit(true);
+				initTextFields();
 				updateErrorMessage("");
 			}
 			else {

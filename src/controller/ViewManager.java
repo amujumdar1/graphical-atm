@@ -79,8 +79,6 @@ public class ViewManager {
 	public void initInformationAccount() {
 		InformationView iv = (InformationView) views.getComponents()[ATM.INFORMATION_VIEW_INDEX];
 		iv.initAccount(account);
-		//System.out.println(account);
-		//System.out.println(account.getUser().getFirstName());
 		iv.initInformation();
 	}
 	
